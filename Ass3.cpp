@@ -147,6 +147,55 @@ node* mirror(node* root) {
     return p1;
 }
 
+void create_bst(node*& root, int val) {
+    if (root == nullptr) {
+        root = new node(val);
+        return;
+    }
+    if (val < root->data){
+        if(root->left==nullptr){
+                node* p=new node(val);
+                root->left=p;
+                return;
+        }
+        create_bst(root->left,val);
+    }
+    else{
+        if(root->right==nullptr){
+                node* p1=new node(val);
+                root->right=p1;
+                return;
+        }
+        create_bst(root->right,val);
+    }
+}
+
+int height(node* root) {
+    if (root == nullptr){
+        return 0;
+    }
+    int lt = height(root->left);
+    int rt = height(root->right);
+    return max(lt, rt) + 1;
+}
+
+bool searchbst(node* root, int val) {
+    node* temp = root;
+    while (temp != nullptr) {
+        if (temp->data == val) {
+            return true;
+        }
+        else if (temp->data > val) {
+            temp = temp->left;
+        }
+        else {
+            temp = temp->right;
+        }
+    }
+    return false;
+}
+
+
 int main() {
     node* root = nullptr;
     node* root2 = nullptr;
@@ -175,7 +224,8 @@ int main() {
                         8.  Create Binary Search Tree\n\
                         9.  Delete node from BST\n\
                         10. Construct BST from preorder & postorder\n\
-                        11. Find height of tree";
+                        11. Find height of tree\n\
+                        12. Search in BST";
         int ch;
         cout << str;
         cout << "\nEnter your choice : ";
@@ -211,13 +261,36 @@ int main() {
                 mirror(root);
                 break;
             case 8:
-                
+                cout<<"Creating a Binary Search Tree";
+                cout<<"Enter Number of Nodes";
+                int v;
+                cin>>v;
+                for(int i=0;i<v;i++){
+                    int r;
+                    cout<<"Enter Node "<<i+1<<" : ";
+                    cin>>r;
+                    create_bst(root2,r);
+                }
             case 9:
-                
+                //delete node
             case 10:
-                
+                //construct bst from pre and inorder
             case 11:
-                
+                cout<<"Calculating height of tree";
+                int h1=height(root);
+                cout<<"Heght of tree is "<<h1;
+            case 12:
+                cout<<"Search is BST";
+                int v1;
+                cout<<"Enter value to be searched : ";
+                cin>>v1;
+                bool ans=searchbst(root2,v1);
+                if(ans==true){
+                    cout<<"Element Found";
+                }
+                else{
+                    cout<<"Element absent";
+                }
             default:
                 cout << "Invalid choice!" << endl;
                 break;
@@ -230,6 +303,5 @@ int main() {
             yu = false;
         }
     }
-
     return 0;
 }
