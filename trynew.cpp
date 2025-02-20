@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
-
+ 
 class node {
 public:
     int data;
@@ -13,7 +13,6 @@ public:
     }
 };
 
-// Insert function
 void insert(node*& root, int val) {
     node* p = new node(val);
     if (root == nullptr) {
@@ -26,7 +25,7 @@ void insert(node*& root, int val) {
             int c;
             cout << "Enter your choice: ";
             cin >> c;
-
+ 
             if (c == 1) {
                 if (temp->left == nullptr) {
                     temp->left = p;
@@ -48,7 +47,6 @@ void insert(node*& root, int val) {
     }
 }
 
-// Recursive traversals
 void inorder(node* root) {
     if (root) {
         inorder(root->left);
@@ -56,6 +54,7 @@ void inorder(node* root) {
         inorder(root->right);
     }
 }
+
 void postorder(node* root) {
     if (root) {
         postorder(root->left);
@@ -63,6 +62,7 @@ void postorder(node* root) {
         cout << root->data << " ";
     }
 }
+
 void preorder(node* root) {
     if (root) {
         cout << root->data << " ";
@@ -70,6 +70,7 @@ void preorder(node* root) {
         preorder(root->right);
     }
 }
+
 void levelorder(node* root) {
     queue<node*> q;
     if (root) {
@@ -84,7 +85,6 @@ void levelorder(node* root) {
     }
 }
 
-// Clone a tree
 node* clone(node* root) {
     if (!root) return nullptr;
     node* p1 = new node(root->data);
@@ -93,7 +93,6 @@ node* clone(node* root) {
     return p1;
 }
 
-// Check equality
 bool equal(node* root1, node* root2) {
     if (!root1 && !root2) return true;
     if (!root1 || !root2) return false;
@@ -102,7 +101,6 @@ bool equal(node* root1, node* root2) {
            equal(root1->right, root2->right);
 }
 
-// Mirror a tree
 node* mirror(node* root) {
     if (!root) return nullptr;
     node* p1 = new node(root->data);
@@ -111,7 +109,6 @@ node* mirror(node* root) {
     return p1;
 }
 
-// Create BST
 void create_bst(node*& root, int val) {
     if (!root) {
         root = new node(val);
@@ -123,52 +120,70 @@ void create_bst(node*& root, int val) {
         create_bst(root->right, val);
     }
 }
-
-// Find height of tree
+ 
 int height(node* root) {
-    if (!root) return 0;
-    return max(height(root->left), height(root->right)) + 1;
-}
-
-// Delete from BST
-node* deleteNode(node* root, int val) {
-    if (!root) return root;
-    if (val < root->data) root->left = deleteNode(root->left, val);
-    else if (val > root->data) root->right = deleteNode(root->right, val);
-    else {
-        if (!root->left) {
-            node* temp = root->right;
-            delete root;
-            return temp;
-        } else if (!root->right) {
-            node* temp = root->left;
-            delete root;
-            return temp;
-        }
-        node* temp = root->right;
-        while (temp->left) temp = temp->left;
-        root->data = temp->data;
-        root->right = deleteNode(root->right, temp->data);
+    if (root == nullptr){
+        return 0;
     }
-    return root;
+    int lt = height(root->left);
+    int rt = height(root->right);
+    int m2=max(lt,rt)+1;
+    return m2;
 }
 
-// Search in BST
+void dele(node* &root, int val) {
+    if (root == nullptr) {
+        return;
+    }
+    if (val < root->data) {
+        dele(root->left, val);
+    } else if (val > root->data) {
+        dele(root->right, val);
+    } else {
+        if (root->left == nullptr && root->right == nullptr) {
+            delete root;
+            root = nullptr;
+        } else if (root->left == nullptr) {
+            node* temp = root;
+            root = root->right;
+            delete temp;
+        } else if (root->right == nullptr) {
+            node* temp = root;
+            root = root->left;
+            delete temp;
+        } else {
+            node* temp = root->right;
+            while (temp->left != nullptr) {
+                temp = temp->left;
+            }
+            root->data = temp->data;
+            dele(root->right, temp->data); 
+        }
+    }
+}
+
 bool searchbst(node* root, int val) {
-    while (root) {
-        if (val == root->data) return true;
-        root = (val < root->data) ? root->left : root->right;
+    node* temp = root;
+    while (temp != nullptr) {
+        if (temp->data == val) {
+            return true;
+        }
+        else if (temp->data > val) {
+            temp = temp->left;
+        }
+        else {
+            temp = temp->right;
+        }
     }
     return false;
 }
 
-// Construct BST from Preorder traversal
 node* constructBSTFromPreorder(vector<int>& preorder, int& index, int minVal, int maxVal) {
     if (index >= preorder.size()) return nullptr;
-    
+ 
     int key = preorder[index];
     if (key < minVal || key > maxVal) return nullptr;
-
+ 
     node* root = new node(key);
     index++;
     root->left = constructBSTFromPreorder(preorder, index, minVal, key);
@@ -176,30 +191,19 @@ node* constructBSTFromPreorder(vector<int>& preorder, int& index, int minVal, in
     return root;
 }
 
-// Wrapper function
 node* constructBSTFromPreorder(vector<int>& preorder) {
     int index = 0;
     return constructBSTFromPreorder(preorder, index, INT_MIN, INT_MAX);
 }
 
-// Main function
 int main() {
     node* root = nullptr;
     node* root2 = nullptr;
-    int n;
-    cout << "Enter the number of nodes to insert: ";
-    cin >> n;
-
-    for (int i = 0; i < n; i++) {
-        int value;
-        cout << "Enter node value: ";
-        cin >> value;
-        insert(root, value);
-    }
-
-    bool yu = true;
-    while (yu) {
+ 
+    bool yu = false;
+    while (true) {
         cout << "\n          Menu\n"
+                "0.  Create a Tree\n"
                 "1.  Preorder\n"
                 "2.  Postorder\n"
                 "3.  Inorder\n"
@@ -212,12 +216,23 @@ int main() {
                 "10. Construct BST from Preorder\n"
                 "11. Find height of tree\n"
                 "12. Search in BST\n";
-
+ 
         int ch;
         cout << "\nEnter your choice: ";
         cin >> ch;
-
+ 
         switch (ch) {
+            case 0:
+                int n;
+                cout << "Enter the number of nodes to insert: ";
+                cin >> n;
+            
+                for (int i = 0; i < n; i++) {
+                    int value;
+                    cout << "Enter node value: ";
+                    cin >> value;
+                    insert(root, value);
+                }
             case 1:
                 preorder(root);
                 cout << endl;
@@ -247,26 +262,41 @@ int main() {
                 break;
             case 8:
                 int v;
-                cout << "Enter node value: ";
+                cout << "Enter the number of nodes : ";
                 cin >> v;
-                create_bst(root2, v);
+                for(int i=0;i<v;i++){
+                    cout<<"Enter Node : ";
+                    int j;cin>>j;
+                    create_bst(root2, j);
+                }
                 break;
             case 9:
                 int delVal;
                 cout << "Enter value to delete: ";
                 cin >> delVal;
-                root2 = deleteNode(root2, delVal);
+                dele(root2, delVal);
                 break;
             case 10:
-                int m;
+                {int m;
                 cout << "Enter size of Preorder: ";
                 cin >> m;
                 vector<int> preorderVals(m);
                 for (int i = 0; i < m; i++) cin >> preorderVals[i];
                 root2 = constructBSTFromPreorder(preorderVals);
-                break;
+                break;}
+            case 11:
+                {cout<<"Calculating height of the tree...";
+                int g=height(root2);
+                cout<<"Height is : "<<g<<endl;
+                break;}
+            case 12:
+                {cout<<"Enter Value : ";
+                int u;cin>>u;
+                bool rtut=searchbst(root2,u);
+                cout<<rtut<<endl;
+                break;}
         }
-
+ 
         cout << "Continue? (Y/N): ";
         char st;
         cin >> st;
